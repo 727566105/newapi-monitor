@@ -4,34 +4,11 @@ import Charts
 struct StatisticsView: View {
     @Environment(NewAPIClient.self) private var client
     
-    @State private var selectedRange: TimeRange = .sevenDays
+    @State private var selectedRange: Period = .realtime
     @State private var selectedModelFilter: String = "全部模型"
     @State private var quotaData: [QuotaData] = []
     @State private var isLoading = false
-    @State private var errorMessage: String?
-    
-    enum TimeRange: String, CaseIterable {
-        case realtime = "实时"
-        case oneDay = "1天"
-        case sevenDays = "7天"
-        case thirtyDays = "30天"
-
-        /// 根据当前时间计算查询的起止时间戳
-        func timeRange() -> (start: Int64, end: Int64) {
-            let now = Int64(Date().timeIntervalSince1970)
-            switch self {
-            case .realtime:
-                let startOfToday = Calendar.current.startOfDay(for: Date())
-                return (Int64(startOfToday.timeIntervalSince1970), now)
-            case .oneDay:
-                return (now - 86400, now)
-            case .sevenDays:
-                return (now - 86400 * 7, now)
-            case .thirtyDays:
-                return (now - 86400 * 30, now)
-            }
-        }
-    }
+@State private var errorMessage: String?
     
     // MARK: - Aggregated Data
     
@@ -49,12 +26,12 @@ struct StatisticsView: View {
     
     private var chartData: [ChartEntry] {
         switch selectedRange {
-        case .realtime, .oneDay:
+        case .realtime, .today:
             // 1天：保留小时粒度
             return filteredData.map { entry in
                 ChartEntry(
                     date: Date(timeIntervalSince1970: TimeInterval(entry.createdAt)),
-                    quota: entry.quota ?? 0,
+                    quota: entry.tokenUsed ?? 0,
                     label: DateHelper.formatTimeOnly(entry.createdAt)
                 )
             }.sorted { $0.date < $1.date }
@@ -64,7 +41,7 @@ struct StatisticsView: View {
             return daily.map { entry in
                 ChartEntry(
                     date: entry.date,
-                    quota: entry.quota,
+                    quota: entry.tokenUsed,
                     label: entry.dateString
                 )
             }.sorted { $0.date < $1.date }
@@ -73,12 +50,12 @@ struct StatisticsView: View {
     
     private var detailData: [DetailEntry] {
         switch selectedRange {
-        case .realtime, .oneDay:
+        case .realtime, .today:
             return filteredData.map { entry in
                 DetailEntry(
                     date: DateHelper.formatTimeOnly(entry.createdAt),
                     model: entry.modelName ?? "未知",
-                    quota: entry.quota ?? 0,
+                    quota: entry.tokenUsed ?? 0,
                     count: entry.count ?? 0,
                     tokenUsed: entry.tokenUsed ?? 0
                 )
@@ -89,7 +66,7 @@ struct StatisticsView: View {
                 DetailEntry(
                     date: entry.dateString,
                     model: "全部",
-                    quota: entry.quota,
+                    quota: entry.tokenUsed,
                     count: entry.count,
                     tokenUsed: entry.tokenUsed
                 )
@@ -109,16 +86,15 @@ struct StatisticsView: View {
                 Spacer()
                 
                 // Time range picker
-                HStack(spacing: 0) {
-                    ForEach(TimeRange.allCases, id: \.self) { range in
-                        Button(range.rawValue) {
-                            selectedRange = range
-                            Task { await loadData() }
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(selectedRange == range ? .accentColor : .clear)
-                        .foregroundStyle(selectedRange == range ? .white : .primary)
+                Picker("时间段", selection: $selectedRange) {
+                    ForEach(Period.allCases, id: \.self) { range in
+                        Text(range.rawValue).tag(range)
                     }
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 260)
+                .onChange(of: selectedRange) { _, _ in
+                    Task { await loadData() }
                 }
                 
                 // Model filter

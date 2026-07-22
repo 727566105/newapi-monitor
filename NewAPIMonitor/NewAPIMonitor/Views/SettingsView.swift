@@ -203,7 +203,7 @@ struct SettingsView: View {
 
     private func saveQuotaTextFormat() {
         AppConfiguration.shared.quotaTextFormat = quotaTextFormat
-        NotificationCenter.default.post(name: .statusBarDisplayModeChanged, object: nil)
+        // 通知由 saveStatusBarMode 统一发送，无需重复
     }
     
     private func loginAndTest() {

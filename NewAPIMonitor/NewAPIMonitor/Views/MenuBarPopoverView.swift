@@ -5,6 +5,13 @@ struct MenuBarPopoverView: View {
 
     @State private var periodQuota: Int = 0
     @State private var periodCount: Int = 0
+    private let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 15
+        config.timeoutIntervalForResource = 30
+        return URLSession(configuration: config)
+    }()
+
     @State private var isLoadingPeriod = false
 
     private var selectedPeriod: Binding<Period> {
@@ -212,6 +219,7 @@ struct MenuBarPopoverView: View {
         guard !AppConfiguration.shared.baseURL.isEmpty,
               AppConfiguration.shared.userId > 0 else { return }
 
+        guard !isLoadingPeriod else { return }
         isLoadingPeriod = true
         defer { isLoadingPeriod = false }
 
@@ -221,7 +229,7 @@ struct MenuBarPopoverView: View {
         let queryItems = [
             URLQueryItem(name: "start_timestamp", value: "\(start)"),
             URLQueryItem(name: "end_timestamp", value: "\(end)"),
-            URLQueryItem(name: "page_size", value: "500")
+            URLQueryItem(name: "page_size", value: "1000")
         ]
         guard var components = URLComponents(string: "\(AppConfiguration.shared.baseURL.trimmingCharacters(in: CharacterSet(charactersIn: "/")))\(path)") else { return }
         components.queryItems = queryItems
@@ -233,13 +241,13 @@ struct MenuBarPopoverView: View {
         }
 
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let (data, _) = try await session.data(for: request)
             struct DataResponse: Codable {
                 let data: [QuotaData]?
             }
             let response = try JSONDecoder().decode(DataResponse.self, from: data)
             if let items = response.data {
-                periodQuota = items.reduce(0) { $0 + ($1.quota ?? 0) }
+                periodQuota = items.reduce(0) { $0 + ($1.tokenUsed ?? 0) }
                 periodCount = items.reduce(0) { $0 + ($1.count ?? 0) }
             }
         } catch {

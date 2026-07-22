@@ -27,6 +27,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.addObserver(self,
             selector: #selector(onPeriodChanged),
             name: .selectedPeriodChanged, object: nil)
+        // 前后台切换时暂停/恢复定时器
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(appWillResignActive),
+            name: NSApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(appDidBecomeActive),
+            name: NSApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Status Item
@@ -111,7 +122,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         components?.queryItems = [
             URLQueryItem(name: "start_timestamp", value: "\(start)"),
             URLQueryItem(name: "end_timestamp", value: "\(end)"),
-            URLQueryItem(name: "page_size", value: "500")
+            URLQueryItem(name: "page_size", value: "1000")
         ]
         guard let url = components?.url else { return }
 
@@ -123,7 +134,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             struct DataResponse: Codable { let data: [QuotaData]? }
             let response = try JSONDecoder().decode(DataResponse.self, from: data)
             if let items = response.data {
-                cachedPeriodQuota = items.reduce(0) { $0 + ($1.quota ?? 0) }
+                cachedPeriodQuota = items.reduce(0) { $0 + ($1.tokenUsed ?? 0) }
             }
         } catch {
             // 静默失败
@@ -181,6 +192,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             await fetchPeriodQuota()
             updateStatusBarTitle()
         }
+    }
+
+    @objc private func appWillResignActive() {
+        cycleTimer?.invalidate()
+        cycleTimer = nil
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+    }
+
+    @objc private func appDidBecomeActive() {
+        startTimers()
     }
 
     // MARK: - Lifecycle

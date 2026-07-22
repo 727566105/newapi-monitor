@@ -2,6 +2,35 @@ import Foundation
 
 enum DateHelper {
 
+    // MARK: - Cached Formatters
+
+    private static let dateTimeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd HH:mm"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private static let dateOnlyFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private static let timeOnlyFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private static let shortDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "MM/dd"
+        return f
+    }()
+
     // MARK: - Timestamp Conversion
 
     /// Convert Unix timestamp (seconds) to Date
@@ -15,22 +44,18 @@ enum DateHelper {
     }
 
     /// Format a Unix timestamp as a date string
-    static func formatDate(_ timestamp: Int64, format: String = "yyyy-MM-dd HH:mm") -> String {
-        let date = dateFromTimestamp(timestamp)
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: date)
+    static func formatDate(_ timestamp: Int64) -> String {
+        dateTimeFormatter.string(from: dateFromTimestamp(timestamp))
     }
 
     /// Format a Unix timestamp as a date-only string
     static func formatDateOnly(_ timestamp: Int64) -> String {
-        formatDate(timestamp, format: "yyyy-MM-dd")
+        dateOnlyFormatter.string(from: dateFromTimestamp(timestamp))
     }
 
     /// Format a Unix timestamp as a time-only string
     static func formatTimeOnly(_ timestamp: Int64) -> String {
-        formatDate(timestamp, format: "HH:mm")
+        timeOnlyFormatter.string(from: dateFromTimestamp(timestamp))
     }
 
     // MARK: - Time Range Helpers
@@ -112,9 +137,7 @@ struct DailyUsage: Identifiable {
     let tokenUsed: Int
 
     var dateString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd"
-        return formatter.string(from: date)
+        DateHelper.shortDateFormatter.string(from: date)
     }
 }
 
@@ -127,9 +150,7 @@ struct HourlyUsage: Identifiable {
     let tokenUsed: Int
 
     var timeString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: date)
+        DateHelper.timeOnlyFormatter.string(from: date)
     }
 }
 
