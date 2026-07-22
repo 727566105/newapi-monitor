@@ -11,15 +11,24 @@ struct StatisticsView: View {
     @State private var errorMessage: String?
     
     enum TimeRange: String, CaseIterable {
+        case realtime = "实时"
         case oneDay = "1天"
         case sevenDays = "7天"
         case thirtyDays = "30天"
-        
-        var seconds: TimeInterval {
+
+        /// 根据当前时间计算查询的起止时间戳
+        func timeRange() -> (start: Int64, end: Int64) {
+            let now = Int64(Date().timeIntervalSince1970)
             switch self {
-            case .oneDay: return 86400
-            case .sevenDays: return 86400 * 7
-            case .thirtyDays: return 86400 * 30
+            case .realtime:
+                let startOfToday = Calendar.current.startOfDay(for: Date())
+                return (Int64(startOfToday.timeIntervalSince1970), now)
+            case .oneDay:
+                return (now - 86400, now)
+            case .sevenDays:
+                return (now - 86400 * 7, now)
+            case .thirtyDays:
+                return (now - 86400 * 30, now)
             }
         }
     }
@@ -40,7 +49,7 @@ struct StatisticsView: View {
     
     private var chartData: [ChartEntry] {
         switch selectedRange {
-        case .oneDay:
+        case .realtime, .oneDay:
             // 1天：保留小时粒度
             return filteredData.map { entry in
                 ChartEntry(
@@ -64,7 +73,7 @@ struct StatisticsView: View {
     
     private var detailData: [DetailEntry] {
         switch selectedRange {
-        case .oneDay:
+        case .realtime, .oneDay:
             return filteredData.map { entry in
                 DetailEntry(
                     date: DateHelper.formatTimeOnly(entry.createdAt),
@@ -266,8 +275,7 @@ struct StatisticsView: View {
         isLoading = true
         errorMessage = nil
         
-        let end = Int64(Date().timeIntervalSince1970)
-        let start = end - Int64(selectedRange.seconds)
+        let (start, end) = selectedRange.timeRange()
         await client.fetchQuotaData(startTimestamp: start, endTimestamp: end)
         quotaData = client.quotaData
         

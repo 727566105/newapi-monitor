@@ -3,31 +3,22 @@ import SwiftUI
 struct MenuBarPopoverView: View {
     @Environment(NewAPIClient.self) private var client
 
-    enum Period: String, CaseIterable {
-        case today = "今日"
-        case sevenDays = "7天"
-        case thirtyDays = "30天"
-
-        var seconds: TimeInterval {
-            switch self {
-            case .today: return 86400
-            case .sevenDays: return 86400 * 7
-            case .thirtyDays: return 86400 * 30
-            }
-        }
-    }
-
-    @State private var selectedPeriod: Period = .today
     @State private var periodQuota: Int = 0
     @State private var periodCount: Int = 0
     @State private var isLoadingPeriod = false
 
+    private var selectedPeriod: Binding<Period> {
+        Binding(
+            get: { AppConfiguration.shared.selectedPeriod },
+            set: { newValue in
+                AppConfiguration.shared.selectedPeriod = newValue
+                NotificationCenter.default.post(name: .selectedPeriodChanged, object: nil)
+            }
+        )
+    }
+
     private var periodLabel: String {
-        switch selectedPeriod {
-        case .today: return "今日用量"
-        case .sevenDays: return "7天用量"
-        case .thirtyDays: return "30天用量"
-        }
+        AppConfiguration.shared.selectedPeriod.label
     }
 
     var body: some View {
@@ -42,13 +33,13 @@ struct MenuBarPopoverView: View {
             Divider()
 
             // Time period selector
-            Picker("时间段", selection: $selectedPeriod) {
+            Picker("时间段", selection: selectedPeriod) {
                 ForEach(Period.allCases, id: \.self) { period in
                     Text(period.rawValue).tag(period)
                 }
             }
             .pickerStyle(.segmented)
-            .onChange(of: selectedPeriod) { _, _ in
+            .onChange(of: AppConfiguration.shared.selectedPeriod) { _, _ in
                 Task { await loadPeriodData() }
             }
 
@@ -224,8 +215,7 @@ struct MenuBarPopoverView: View {
         isLoadingPeriod = true
         defer { isLoadingPeriod = false }
 
-        let end = Int64(Date().timeIntervalSince1970)
-        let start = end - Int64(selectedPeriod.seconds)
+        let (start, end) = selectedPeriod.wrappedValue.timeRange()
 
         let path = AppConfiguration.shared.role == .admin ? "/api/data/" : "/api/data/self"
         let queryItems = [
@@ -268,4 +258,6 @@ struct MenuBarPopoverView: View {
 extension Notification.Name {
     static let navigateToSettings = Notification.Name("navigateToSettings")
     static let closePopover = Notification.Name("closePopover")
+    static let statusBarDisplayModeChanged = Notification.Name("statusBarDisplayModeChanged")
+    static let selectedPeriodChanged = Notification.Name("selectedPeriodChanged")
 }

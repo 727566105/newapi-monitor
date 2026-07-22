@@ -13,6 +13,55 @@ enum UserRole: String, Codable, CaseIterable {
     }
 }
 
+/// 状态栏显示模式
+enum StatusBarDisplayMode: String, CaseIterable {
+    case textOnly = "纯文本"
+    case cycle = "轮播切换"
+
+    var displayName: String { rawValue }
+}
+
+/// 纯文本模式下数字格式
+enum QuotaTextFormat: String, CaseIterable {
+    case abbreviated = "缩写"
+    case full = "完整"
+
+    var displayName: String { rawValue }
+}
+
+/// 时间段筛选
+enum Period: String, CaseIterable {
+    case realtime = "实时"
+    case today = "今日"
+    case sevenDays = "7天"
+    case thirtyDays = "30天"
+
+    /// 根据当前时间计算查询的起止时间戳
+    func timeRange() -> (start: Int64, end: Int64) {
+        let now = Int64(Date().timeIntervalSince1970)
+        switch self {
+        case .realtime:
+            let startOfToday = Calendar.current.startOfDay(for: Date())
+            return (Int64(startOfToday.timeIntervalSince1970), now)
+        case .today:
+            return (now - 86400, now)
+        case .sevenDays:
+            return (now - 86400 * 7, now)
+        case .thirtyDays:
+            return (now - 86400 * 30, now)
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .realtime: return "实时用量"
+        case .today: return "今日用量"
+        case .sevenDays: return "7天用量"
+        case .thirtyDays: return "30天用量"
+        }
+    }
+}
+
 /// 应用配置，持久化到 UserDefaults
 @Observable
 final class AppConfiguration {
@@ -29,6 +78,9 @@ final class AppConfiguration {
         static let role = "app_role"
         static let refreshInterval = "app_refresh_interval"
         static let hasCompletedSetup = "app_has_completed_setup"
+        static let statusBarDisplayMode = "app_status_bar_display_mode"
+        static let selectedPeriod = "app_selected_period"
+        static let quotaTextFormat = "app_quota_text_format"
     }
     
     // MARK: - Properties
@@ -63,6 +115,18 @@ final class AppConfiguration {
     var hasCompletedSetup: Bool {
         didSet { defaults.set(hasCompletedSetup, forKey: Keys.hasCompletedSetup) }
     }
+
+    var statusBarDisplayMode: StatusBarDisplayMode {
+        didSet { defaults.set(statusBarDisplayMode.rawValue, forKey: Keys.statusBarDisplayMode) }
+    }
+
+    var selectedPeriod: Period {
+        didSet { defaults.set(selectedPeriod.rawValue, forKey: Keys.selectedPeriod) }
+    }
+
+    var quotaTextFormat: QuotaTextFormat {
+        didSet { defaults.set(quotaTextFormat.rawValue, forKey: Keys.quotaTextFormat) }
+    }
     
     // MARK: - Computed
     
@@ -88,6 +152,9 @@ final class AppConfiguration {
         let interval = defaults.double(forKey: Keys.refreshInterval)
         self.refreshInterval = interval == 0 ? 60 : interval
         self.hasCompletedSetup = defaults.bool(forKey: Keys.hasCompletedSetup)
+        self.statusBarDisplayMode = StatusBarDisplayMode(rawValue: defaults.string(forKey: Keys.statusBarDisplayMode) ?? "") ?? .textOnly
+        self.selectedPeriod = Period(rawValue: defaults.string(forKey: Keys.selectedPeriod) ?? "") ?? .realtime
+        self.quotaTextFormat = QuotaTextFormat(rawValue: defaults.string(forKey: Keys.quotaTextFormat) ?? "") ?? .abbreviated
     }
     
     /// 清除登录状态

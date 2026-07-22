@@ -10,6 +10,8 @@ struct SettingsView: View {
     @State private var isTesting = false
     @State private var isLoggedIn = false
     @State private var showURLHint = false
+    @State private var statusBarMode: StatusBarDisplayMode = .textOnly
+    @State private var quotaTextFormat: QuotaTextFormat = .abbreviated
     
     private enum ConnectionStatus {
         case idle, testing, success, failed(String)
@@ -106,15 +108,47 @@ struct SettingsView: View {
                 }
                 
                 LabeledContent("刷新间隔") {
-                    HStack {
-                        Slider(value: $refreshInterval, in: 30...300, step: 10) {
-                            Text("刷新间隔")
-                        }
-                        Text("\(Int(refreshInterval))s")
-                            .monospacedDigit()
-                            .frame(width: 40)
+                    Picker("", selection: $refreshInterval) {
+                        Text("10s").tag(10.0)
+                        Text("15s").tag(15.0)
+                        Text("30s").tag(30.0)
+                        Text("60s").tag(60.0)
+                        Text("120s").tag(120.0)
+                        Text("300s").tag(300.0)
                     }
-                    .frame(width: 250)
+                    .pickerStyle(.segmented)
+                    .frame(width: 280)
+                }
+
+                LabeledContent("状态栏显示") {
+                    Picker("", selection: $statusBarMode) {
+                        ForEach(StatusBarDisplayMode.allCases, id: \.self) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 200)
+                }
+
+                if statusBarMode == .textOnly {
+                    HStack(spacing: 0) {
+                        Rectangle()
+                            .fill(Color.accentColor.opacity(statusBarMode == .textOnly ? 1 : 0))
+                            .frame(width: 3)
+                        LabeledContent("数字格式") {
+                            Picker("", selection: $quotaTextFormat) {
+                                ForEach(QuotaTextFormat.allCases, id: \.self) { fmt in
+                                    Text(fmt.displayName).tag(fmt)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 200)
+                        }
+                        .padding(10)
+                    }
+                    .background(.quaternary)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .padding(.leading, -4)
                 }
             }
             
@@ -135,6 +169,8 @@ struct SettingsView: View {
         .onChange(of: baseURL) { _, _ in saveBaseURL() }
         .onChange(of: selectedRole) { _, _ in saveRole() }
         .onChange(of: refreshInterval) { _, _ in saveRefreshInterval() }
+        .onChange(of: statusBarMode) { _, _ in saveStatusBarMode() }
+        .onChange(of: quotaTextFormat) { _, _ in saveQuotaTextFormat() }
     }
     
     private func loadConfiguration() {
@@ -143,6 +179,8 @@ struct SettingsView: View {
         username = config.username
         selectedRole = config.role
         refreshInterval = config.refreshInterval
+        statusBarMode = config.statusBarDisplayMode
+        quotaTextFormat = config.quotaTextFormat
         isLoggedIn = !config.sessionCookie.isEmpty
     }
     
@@ -156,6 +194,16 @@ struct SettingsView: View {
     
     private func saveRefreshInterval() {
         AppConfiguration.shared.refreshInterval = refreshInterval
+    }
+
+    private func saveStatusBarMode() {
+        AppConfiguration.shared.statusBarDisplayMode = statusBarMode
+        NotificationCenter.default.post(name: .statusBarDisplayModeChanged, object: nil)
+    }
+
+    private func saveQuotaTextFormat() {
+        AppConfiguration.shared.quotaTextFormat = quotaTextFormat
+        NotificationCenter.default.post(name: .statusBarDisplayModeChanged, object: nil)
     }
     
     private func loginAndTest() {
