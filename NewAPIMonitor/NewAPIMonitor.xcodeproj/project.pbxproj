@@ -1,0 +1,435 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000101000000000000001 /* NewAPIMonitorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000101000000000000001 /* NewAPIMonitorApp.swift */; };
+		A1000102000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000102000000000000001 /* AppDelegate.swift */; };
+		A1000103000000000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000103000000000000001 /* ContentView.swift */; };
+		A1000104000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000104000000000000001 /* SettingsView.swift */; };
+		A1000105000000000000001 /* OverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000105000000000000001 /* OverviewView.swift */; };
+		A1000106000000000000001 /* ModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000106000000000000001 /* ModelsView.swift */; };
+		A1000107000000000000001 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000107000000000000001 /* StatisticsView.swift */; };
+		A1000108000000000000001 /* MenuBarPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000108000000000000001 /* MenuBarPopoverView.swift */; };
+		A1000109000000000000001 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000109000000000000001 /* UserInfo.swift */; };
+		A1000110000000000000001 /* APIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000110000000000000001 /* APIModel.swift */; };
+		A1000111000000000000001 /* LogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000111000000000000001 /* LogEntry.swift */; };
+		A1000112000000000000001 /* QuotaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000112000000000000001 /* QuotaData.swift */; };
+		A1000113000000000000001 /* TokenUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000113000000000000001 /* TokenUsage.swift */; };
+		A1000114000000000000001 /* Stat.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000114000000000000001 /* Stat.swift */; };
+		A1000115000000000000001 /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000115000000000000001 /* APIResponse.swift */; };
+		A1000116000000000000001 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000116000000000000001 /* AppConfiguration.swift */; };
+		A1000117000000000000001 /* NewAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000117000000000000001 /* NewAPIClient.swift */; };
+		A1000118000000000000001 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000118000000000000001 /* DateHelper.swift */; };
+		A1000119000000000000001 /* QuotaFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000119000000000000001 /* QuotaFormatter.swift */; };
+		A1000120000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000120000000000000001 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A3000101000000000000001 /* NewAPIMonitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewAPIMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000101000000000000001 /* NewAPIMonitorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAPIMonitorApp.swift; sourceTree = "<group>"; };
+		A2000102000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A2000103000000000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A2000104000000000000001 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A2000105000000000000001 /* OverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewView.swift; sourceTree = "<group>"; };
+		A2000106000000000000001 /* ModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsView.swift; sourceTree = "<group>"; };
+		A2000107000000000000001 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		A2000108000000000000001 /* MenuBarPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarPopoverView.swift; sourceTree = "<group>"; };
+		A2000109000000000000001 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		A2000110000000000000001 /* APIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModel.swift; sourceTree = "<group>"; };
+		A2000111000000000000001 /* LogEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntry.swift; sourceTree = "<group>"; };
+		A2000112000000000000001 /* QuotaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaData.swift; sourceTree = "<group>"; };
+		A2000113000000000000001 /* TokenUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenUsage.swift; sourceTree = "<group>"; };
+		A2000114000000000000001 /* Stat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stat.swift; sourceTree = "<group>"; };
+		A2000115000000000000001 /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
+		A2000116000000000000001 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		A2000117000000000000001 /* NewAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAPIClient.swift; sourceTree = "<group>"; };
+		A2000118000000000000001 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
+		A2000119000000000000001 /* QuotaFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaFormatter.swift; sourceTree = "<group>"; };
+		A2000120000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A4000101000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A5000101000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A5000102000000000000001 /* NewAPIMonitor */,
+				A5000120000000000000001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A5000120000000000000001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A3000101000000000000001 /* NewAPIMonitor.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A5000102000000000000001 /* NewAPIMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				A5000103000000000000001 /* App */,
+				A5000104000000000000001 /* Views */,
+				A5000105000000000000001 /* Models */,
+				A5000106000000000000001 /* Services */,
+				A5000107000000000000001 /* Helpers */,
+				A2000120000000000000001 /* Assets.xcassets */,
+			);
+			path = NewAPIMonitor;
+			sourceTree = "<group>";
+		};
+		A5000103000000000000001 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A2000101000000000000001 /* NewAPIMonitorApp.swift */,
+				A2000102000000000000001 /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A5000104000000000000001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A2000103000000000000001 /* ContentView.swift */,
+				A2000104000000000000001 /* SettingsView.swift */,
+				A2000105000000000000001 /* OverviewView.swift */,
+				A2000106000000000000001 /* ModelsView.swift */,
+				A2000107000000000000001 /* StatisticsView.swift */,
+				A2000108000000000000001 /* MenuBarPopoverView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A5000105000000000000001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A2000109000000000000001 /* UserInfo.swift */,
+				A2000110000000000000001 /* APIModel.swift */,
+				A2000111000000000000001 /* LogEntry.swift */,
+				A2000112000000000000001 /* QuotaData.swift */,
+				A2000113000000000000001 /* TokenUsage.swift */,
+				A2000114000000000000001 /* Stat.swift */,
+				A2000115000000000000001 /* APIResponse.swift */,
+				A2000116000000000000001 /* AppConfiguration.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A5000106000000000000001 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A2000117000000000000001 /* NewAPIClient.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A5000107000000000000001 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A2000118000000000000001 /* DateHelper.swift */,
+				A2000119000000000000001 /* QuotaFormatter.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6000101000000000000001 /* NewAPIMonitor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8000103000000000000001 /* Build configuration list for PBXNativeTarget "NewAPIMonitor" */;
+			buildPhases = (
+				A7000101000000000000001 /* Sources */,
+				A4000101000000000000001 /* Frameworks */,
+				A7000102000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NewAPIMonitor;
+			productName = NewAPIMonitor;
+			productReference = A3000101000000000000001 /* NewAPIMonitor.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A9000101000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					A6000101000000000000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = A8000101000000000000001 /* Build configuration list for PBXProject "NewAPIMonitor" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hans",
+			);
+			mainGroup = A5000101000000000000001;
+			productRefGroup = A5000120000000000000001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A6000101000000000000001 /* NewAPIMonitor */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A7000102000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000120000000000000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A7000101000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000101000000000000001 /* NewAPIMonitorApp.swift in Sources */,
+				A1000102000000000000001 /* AppDelegate.swift in Sources */,
+				A1000103000000000000001 /* ContentView.swift in Sources */,
+				A1000104000000000000001 /* SettingsView.swift in Sources */,
+				A1000105000000000000001 /* OverviewView.swift in Sources */,
+				A1000106000000000000001 /* ModelsView.swift in Sources */,
+				A1000107000000000000001 /* StatisticsView.swift in Sources */,
+				A1000108000000000000001 /* MenuBarPopoverView.swift in Sources */,
+				A1000109000000000000001 /* UserInfo.swift in Sources */,
+				A1000110000000000000001 /* APIModel.swift in Sources */,
+				A1000111000000000000001 /* LogEntry.swift in Sources */,
+				A1000112000000000000001 /* QuotaData.swift in Sources */,
+				A1000113000000000000001 /* TokenUsage.swift in Sources */,
+				A1000114000000000000001 /* Stat.swift in Sources */,
+				A1000115000000000000001 /* APIResponse.swift in Sources */,
+				A1000116000000000000001 /* AppConfiguration.swift in Sources */,
+				A1000117000000000000001 /* NewAPIClient.swift in Sources */,
+				A1000118000000000000001 /* DateHelper.swift in Sources */,
+				A1000119000000000000001 /* QuotaFormatter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AB0001010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AB0001020000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AB0002010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "NewAPI Monitor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newapi.monitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AB0002020000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "NewAPI Monitor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newapi.monitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A8000101000000000000001 /* Build configuration list for PBXProject "NewAPIMonitor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB0001010000000000000001 /* Debug */,
+				AB0001020000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8000103000000000000001 /* Build configuration list for PBXNativeTarget "NewAPIMonitor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB0002010000000000000001 /* Debug */,
+				AB0002020000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A9000101000000000000001 /* Project object */;
+}
