@@ -18,14 +18,14 @@ enum DateHelper {
         return f
     }()
 
-    private static let timeOnlyFormatter: DateFormatter = {
+    static let timeOnlyFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm"
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }()
 
-    private static let shortDateFormatter: DateFormatter = {
+    static let shortDateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "MM/dd"
         return f

@@ -30,6 +30,7 @@ Pods/
 *.ipa
 *.dSYM.zip
 *.dSYM
+*.dmg
 
 # IDE
 .idea/

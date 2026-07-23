@@ -1,21 +1,7 @@
 import Foundation
 
-/// 配额数值格式化工具（DateFormatter/NumberFormatter 缓存优化）
+/// 配额数值格式化工具
 enum QuotaFormatter {
-
-    // MARK: - Cached Formatters
-
-    private static let abbreviatedFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .decimal
-        return f
-    }()
-
-    private static let fullFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .decimal
-        return f
-    }()
 
     // MARK: - 简写格式（52K, 1.2M）
 
@@ -45,7 +31,7 @@ enum QuotaFormatter {
     // MARK: - 完整格式（带千分位）
 
     static func full(_ value: Int) -> String {
-        fullFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
+        value.formatted(.number.grouping(.automatic))
     }
 
     // MARK: - 百分比格式

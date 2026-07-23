@@ -1,104 +1,54 @@
 import AppKit
 import SwiftUI
+import Combine
 
-/// 管理 macOS 菜单栏状态项和下拉弹窗
+/// 后台数据刷新协调器 — 周期性拉取数据到 NewAPIClient.shared
+/// MenuBarExtra 替换了旧的 NSStatusItem + NSPopover 方案
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    var statusItem: NSStatusItem!
-    var popover: NSPopover!
-    var refreshTimer: Timer?
-    var cycleTimer: Timer?
-
-    /// 轮播索引：0=实时用量, 1=配额%, 2=RPM
-    private var cycleIndex = 0
-    /// 缓存的时间段用量
-    private var cachedPeriodQuota: Int = 0
-    /// 缓存的配额百分比
-    private var cachedPercentage: String = "--"
-    /// 缓存的 RPM
-    private var cachedRPM: Int = 0
+    private var refreshCancellable: AnyCancellable?
+    private var resignActiveCancellable: AnyCancellable?
+    private var becomeActiveCancellable: AnyCancellable?
+    private var periodChangeCancellable: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        setupStatusItem()
-        setupPopover()
         startTimers()
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(onDisplayModeChanged),
-            name: .statusBarDisplayModeChanged, object: nil)
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(onPeriodChanged),
-            name: .selectedPeriodChanged, object: nil)
-        // 前后台切换时暂停/恢复定时器
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(appWillResignActive),
-            name: NSApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(appDidBecomeActive),
-            name: NSApplication.didBecomeActiveNotification, object: nil)
-    }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    // MARK: - Status Item
-
-    private func setupStatusItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.title = "🤖 --"
-
-        if let button = statusItem.button {
-            button.target = self
-            button.action = #selector(togglePopover)
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        }
-    }
-
-    // MARK: - Popover
-
-    private func setupPopover() {
-        popover = NSPopover()
-        popover.contentSize = NSSize(width: 300, height: 450)
-        popover.behavior = .transient
-        popover.contentViewController = NSHostingController(
-            rootView: MenuBarPopoverView()
-                .environment(NewAPIClient.shared)
-        )
-    }
-
-    @objc private func togglePopover() {
-        if popover.isShown {
-            popover.performClose(nil)
-        } else {
-            Task {
-                await NewAPIClient.shared.fetchTokenUsage()
-                await NewAPIClient.shared.fetchStat()
+        // 前台/后台切换：暂停/恢复定时器
+        resignActiveCancellable = NotificationCenter.default
+            .publisher(for: NSApplication.willResignActiveNotification)
+            .sink { [weak self] _ in
+                self?.stopRefreshTimer()
             }
-            popover.show(relativeTo: statusItem.button!.bounds, of: statusItem.button!, preferredEdge: .minY)
-        }
+
+        becomeActiveCancellable = NotificationCenter.default
+            .publisher(for: NSApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.startTimers()
+            }
+
+        // 时间段变更时重新拉取数据
+        periodChangeCancellable = NotificationCenter.default
+            .publisher(for: .selectedPeriodChanged)
+            .sink { [weak self] _ in
+                Task { await self?.fetchAllData() }
+            }
     }
 
     // MARK: - Timers
 
     private func startTimers() {
-        startRefreshTimer()
-        startCycleTimer()
-    }
+        stopRefreshTimer()
 
-    private func startRefreshTimer() {
-        refreshTimer?.invalidate()
         let interval = AppConfiguration.shared.refreshInterval
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            Task { await self?.fetchAllData() }
-        }
+        refreshCancellable = Timer.publish(every: interval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task { await self.fetchAllData() }
+            }
+
         // 立即获取一次
         Task { await fetchAllData() }
-    }
-
-    private func startCycleTimer() {
-        cycleTimer?.invalidate()
-        cycleTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
-            self?.updateStatusBarTitle()
-        }
     }
 
     // MARK: - Data Fetching
@@ -107,10 +57,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         await NewAPIClient.shared.fetchTokenUsage()
         await NewAPIClient.shared.fetchStat()
         await fetchPeriodQuota()
-        updateStatusBarTitle()
     }
 
-    /// 获取当前选中时间段的用量
+    /// 获取当前选中时间段的用量，存入 client.quotaData
     private func fetchPeriodQuota() async {
         let config = AppConfiguration.shared
         guard !config.baseURL.isEmpty, config.userId > 0 else { return }
@@ -134,84 +83,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             struct DataResponse: Codable { let data: [QuotaData]? }
             let response = try JSONDecoder().decode(DataResponse.self, from: data)
             if let items = response.data {
-                cachedPeriodQuota = items.reduce(0) { $0 + ($1.tokenUsed ?? 0) }
+                // 存入 client 的 quotaData，供 MenuBarLabel 读取
+                NewAPIClient.shared.quotaData = items
             }
         } catch {
             // 静默失败
         }
     }
 
-    // MARK: - Status Bar Update
-
-    func updateStatusBarTitle() {
-        let mode = AppConfiguration.shared.statusBarDisplayMode
-
-        // 更新缓存的百分比和 RPM
-        if let usage = NewAPIClient.shared.tokenUsage {
-            if usage.unlimitedQuota {
-                cachedPercentage = "∞"
-            } else if usage.totalGranted > 0 {
-                let pct = Double(usage.totalUsed) / Double(usage.totalGranted) * 100
-                cachedPercentage = String(format: "%.0f%%", pct)
-            } else {
-                cachedPercentage = "--"
-            }
-        }
-        cachedRPM = NewAPIClient.shared.currentStat?.rpm ?? 0
-
-        switch mode {
-        case .textOnly:
-            // 方案A：纯文本，支持缩写/完整切换
-            let fmt = AppConfiguration.shared.quotaTextFormat
-            let value = fmt == .abbreviated
-                ? QuotaFormatter.abbreviated(cachedPeriodQuota)
-                : QuotaFormatter.full(cachedPeriodQuota)
-            statusItem.button?.title = "\(value) token"
-
-        case .cycle:
-            // 方案C：轮播切换（每3秒切换一个）
-            let titles = [
-                "🤖 \(QuotaFormatter.abbreviated(cachedPeriodQuota)) token",
-                "🤖 \(cachedPercentage)",
-                "🤖 \(cachedRPM) RPM"
-            ]
-            statusItem.button?.title = titles[cycleIndex]
-            cycleIndex = (cycleIndex + 1) % titles.count
-        }
-    }
-
-    // MARK: - Notification
-
-    @objc private func onDisplayModeChanged() {
-        cycleIndex = 0
-        updateStatusBarTitle()
-    }
-
-    @objc private func onPeriodChanged() {
-        Task {
-            await fetchPeriodQuota()
-            updateStatusBarTitle()
-        }
-    }
-
-    @objc private func appWillResignActive() {
-        cycleTimer?.invalidate()
-        cycleTimer = nil
-        refreshTimer?.invalidate()
-        refreshTimer = nil
-    }
-
-    @objc private func appDidBecomeActive() {
-        startTimers()
-    }
-
     // MARK: - Lifecycle
 
     func stopRefreshTimer() {
-        refreshTimer?.invalidate()
-        refreshTimer = nil
-        cycleTimer?.invalidate()
-        cycleTimer = nil
+        refreshCancellable?.cancel()
+        refreshCancellable = nil
     }
 
     func restartRefreshTimer() {

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 @Observable
 final class NewAPIClient {
@@ -29,7 +30,7 @@ final class NewAPIClient {
     var isLoadingStats = false
 
     // MARK: - Timer
-    private var refreshTimer: Timer?
+    private var refreshCancellable: AnyCancellable?
 
     // MARK: - URLSession
     private let session: URLSession
@@ -450,18 +451,20 @@ final class NewAPIClient {
     func startRefreshTimer() {
         stopRefreshTimer()
         let interval = configuration.refreshInterval
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            Task {
-                await self.fetchTokenUsage()
-                await self.fetchStat()
+        refreshCancellable = Timer.publish(every: interval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task {
+                    await self.fetchTokenUsage()
+                    await self.fetchStat()
+                }
             }
-        }
     }
 
     func stopRefreshTimer() {
-        refreshTimer?.invalidate()
-        refreshTimer = nil
+        refreshCancellable?.cancel()
+        refreshCancellable = nil
     }
 
     // MARK: - Usage Percentage

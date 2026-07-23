@@ -198,12 +198,12 @@ struct SettingsView: View {
 
     private func saveStatusBarMode() {
         AppConfiguration.shared.statusBarDisplayMode = statusBarMode
-        NotificationCenter.default.post(name: .statusBarDisplayModeChanged, object: nil)
+        // MenuBarLabel reacts to @Observable changes automatically
     }
 
     private func saveQuotaTextFormat() {
         AppConfiguration.shared.quotaTextFormat = quotaTextFormat
-        // 通知由 saveStatusBarMode 统一发送，无需重复
+        // MenuBarLabel reacts to @Observable changes automatically
     }
     
     private func loginAndTest() {

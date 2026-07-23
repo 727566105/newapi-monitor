@@ -2,16 +2,10 @@ import SwiftUI
 
 struct MenuBarPopoverView: View {
     @Environment(NewAPIClient.self) private var client
+    @Environment(\.openSettings) private var openSettings
 
     @State private var periodQuota: Int = 0
     @State private var periodCount: Int = 0
-    private let session: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 15
-        config.timeoutIntervalForResource = 30
-        return URLSession(configuration: config)
-    }()
-
     @State private var isLoadingPeriod = false
 
     private var selectedPeriod: Binding<Period> {
@@ -180,11 +174,10 @@ struct MenuBarPopoverView: View {
             // Buttons
             HStack(spacing: 12) {
                 Button {
-                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.activate()
                     if let window = NSApp.windows.first(where: { $0.isVisible && $0.canBecomeKey }) {
                         window.makeKeyAndOrderFront(nil)
                     }
-                    closePopover()
                 } label: {
                     Text("打开主窗口")
                         .font(.caption)
@@ -192,13 +185,11 @@ struct MenuBarPopoverView: View {
                 .buttonStyle(.bordered)
 
                 Button {
-                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.activate()
                     if let window = NSApp.windows.first(where: { $0.isVisible && $0.canBecomeKey }) {
                         window.makeKeyAndOrderFront(nil)
                     }
-                    closePopover()
-                    // Navigate to settings
-                    NotificationCenter.default.post(name: .navigateToSettings, object: nil)
+                    openSettings()
                 } label: {
                     Text("设置...")
                         .font(.caption)
@@ -241,7 +232,7 @@ struct MenuBarPopoverView: View {
         }
 
         do {
-            let (data, _) = try await session.data(for: request)
+            let (data, _) = try await URLSession.shared.data(for: request)
             struct DataResponse: Codable {
                 let data: [QuotaData]?
             }
@@ -256,16 +247,9 @@ struct MenuBarPopoverView: View {
             periodCount = 0
         }
     }
-
-    private func closePopover() {
-        NotificationCenter.default.post(name: .closePopover, object: nil)
-    }
 }
 
-// Notification names
+// Notification names (selectedPeriodChanged retained for AppDelegate Combine sink)
 extension Notification.Name {
-    static let navigateToSettings = Notification.Name("navigateToSettings")
-    static let closePopover = Notification.Name("closePopover")
-    static let statusBarDisplayModeChanged = Notification.Name("statusBarDisplayModeChanged")
     static let selectedPeriodChanged = Notification.Name("selectedPeriodChanged")
 }
